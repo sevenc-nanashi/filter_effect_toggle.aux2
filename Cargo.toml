@@ -1,0 +1,13 @@
+[package]
+name = "filter-effect-toggle-aux2"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/sevenc-nanashi/filter_effect_toggle.aux2"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+arboard = "3.6.1"
+aviutl2 = "0.17.0"

@@ -1,0 +1,48 @@
+#:schema ./.aviutl2-cli/aviutl2.schema.json
+
+# 設定ファイルについては https://github.com/sevenc-nanashi/aviutl2-cli を参照してください。
+[project]
+name = "filter_effect_toggle"
+version = "0.1.0"
+
+[artifacts."filter_effect_toggle.aux2"]
+enabled = true
+destination = "Plugin/filter_effect_toggle.aux2"
+
+[artifacts."filter_effect_toggle.aux2".profiles.debug]
+build = "cargo build"
+source = "target/debug/filter_effect_toggle_aux2.dll"
+enabled = true
+
+[artifacts."filter_effect_toggle.aux2".profiles.release]
+build = ["cargo build --release"]
+source = "target/release/filter_effect_toggle_aux2.dll"
+enabled = true
+
+[artifacts."English.aul2"]
+enabled = false
+source = "https://raw.githubusercontent.com/aviutl2/aviutl2_community_translation/refs/heads/main/locales/community_en.aul2"
+destination = "Language/English.aul2"
+profiles = { debug = { enabled = true } }
+
+[artifacts."English.filter_effect_toggle.aul2"]
+source = "./i18n/English.filter_effect_toggle.aul2"
+destination = "Language/English.filter_effect_toggle.aul2"
+
+[development]
+aviutl2_version = "latest"
+
+[release]
+prebuild = ["cargo about generate ./about.hbs -o ./release/package.txt"]
+package_template = "./release/package.txt"
+
+[catalog]
+id = "sevenc-nanashi.filter_effect_toggle.aux2"
+name = "filter_effect_toggle.aux2"
+summary = "オブジェクトメニューにフィルタ効果とフィルタオブジェクトを切り替える機能を追加するプラグイン"
+author = "Nanashi."
+type = "common"
+description = { type = "url", url = "https://raw.githubusercontent.com/sevenc-nanashi/filter_effect_toggle.aux2/main/README.md" }
+download_source = { type = "github", owner = "sevenc-nanashi", repo = "filter_effect_toggle.aux2" }
+license = { type = "MIT", template = false, text = { type = "file", path = "./LICENSE" } }
+homepage = "https://github.com/sevenc-nanashi/filter_effect_toggle.aux2"
