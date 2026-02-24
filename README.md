@@ -2,7 +2,7 @@
 
 [English](README.en.md) | [日本語](README.md)
 
-[![AviUtl2 Catalog](https://aviutl2-catalog-badge.sevenc7c.workers.dev/badge/v/sevenc-nanashi.filter_effect_toggle.aux2)](https://aviutl2-catalog-badge.sevenc7c.workers.dev/package/sevenc-nanashi.filter_effect_toggle.aux2)
+[![AviUtl2 Catalog](https://aviutl2-catalog-badge.sevenc7c.workers.dev/badge/v/sevenc-nanashi.filter_effect_toggle-aux2)](https://aviutl2-catalog-badge.sevenc7c.workers.dev/package/sevenc-nanashi.filter_effect_toggle-aux2)
 
 AviUtl2のオブジェクトメニューにフィルタ効果とフィルタオブジェクトを切り替える機能を追加する汎用プラグインです。
 
