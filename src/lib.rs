@@ -65,7 +65,7 @@ impl FilterEffectToggleAux2 {
                 anyhow::anyhow!("The object is neither a Filter Object nor a Filter Effect")
             })?;
             match object_type {
-                ObjectType::FilterObject => object_to_filter_effect(edit, object_handle),
+                ObjectType::FilterObject => filter_object_to_effect(edit, object_handle),
                 ObjectType::FilterEffect => filter_effect_to_object(edit, object_handle),
             }
         })
@@ -73,7 +73,7 @@ impl FilterEffectToggleAux2 {
 
     #[object(name = "[filter_effect_toggle.aux2] フィルタオブジェクト → フィルタ効果")]
     fn object_filter_object_to_effect(&mut self) -> anyhow::Result<()> {
-        run_operations_to_selected_objects(object_to_filter_effect)
+        run_operations_to_selected_objects(filter_object_to_effect)
     }
 
     #[object(name = "[filter_effect_toggle.aux2] フィルタ効果 → フィルタオブジェクト")]
@@ -171,7 +171,7 @@ fn filter_effect_to_object(
 
     Ok(())
 }
-fn object_to_filter_effect(
+fn filter_object_to_effect(
     edit: &mut aviutl2::generic::EditSection,
     object_handle: &aviutl2::generic::ObjectHandle,
 ) -> anyhow::Result<()> {
@@ -188,9 +188,12 @@ fn object_to_filter_effect(
         .get_table("Object")
         .ok_or_else(|| anyhow::anyhow!("[Object] table was not found"))?;
     let mut new_object_section = object_table.clone();
+    let mut last_table_index = 0;
     for (i, table) in object_table.iter_subtables_as_array().skip(1).enumerate() {
         new_object_section.insert_table(&i.to_string(), table.clone());
+        last_table_index = i;
     }
+    new_object_section.remove_table(&(last_table_index + 1).to_string());
 
     let mut new_object_alias = alias.clone();
     new_object_alias.insert_table("Object", new_object_section);
