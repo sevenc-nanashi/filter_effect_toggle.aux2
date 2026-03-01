@@ -9,4 +9,4 @@ repository = "https://github.com/sevenc-nanashi/filter_effect_toggle.aux2"
 crate-type = ["cdylib"]
 
 [dependencies]
-aviutl2 = "0.17.0"
+aviutl2 = "0.20.0"

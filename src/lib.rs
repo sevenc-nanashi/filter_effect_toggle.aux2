@@ -1,4 +1,4 @@
-use aviutl2::{anyhow, log};
+use aviutl2::{anyhow, tracing};
 
 static GLOBAL_EDIT_HANDLE: aviutl2::generic::GlobalEditHandle =
     aviutl2::generic::GlobalEditHandle::new();
@@ -11,23 +11,31 @@ struct FilterEffectToggleAux2;
 
 impl aviutl2::generic::GenericPlugin for FilterEffectToggleAux2 {
     fn new(_info: aviutl2::AviUtl2Info) -> aviutl2::AnyResult<Self> {
-        aviutl2::logger::LogBuilder::new()
-            .filter_level(if cfg!(debug_assertions) {
-                aviutl2::logger::LevelFilter::Debug
+        aviutl2::tracing_subscriber::fmt()
+            .with_max_level(if cfg!(debug_assertions) {
+                tracing::Level::DEBUG
             } else {
-                aviutl2::logger::LevelFilter::Info
+                tracing::Level::INFO
             })
+            .event_format(aviutl2::logger::AviUtl2Formatter)
+            .with_writer(aviutl2::logger::AviUtl2LogWriter)
             .init();
         Ok(Self)
+    }
+
+    fn plugin_info(&self) -> aviutl2::generic::GenericPluginTable {
+        aviutl2::generic::GenericPluginTable {
+            name: "filter_effect_toggle.aux2".to_string(),
+            information: format!(
+                "Toggle Between Filter Object and Filter Effect / v{} / https://github.com/sevenc-nanashi/filter_effect_toggle.aux2",
+                env!("CARGO_PKG_VERSION")
+            ),
+        }
     }
 
     fn register(&mut self, registry: &mut aviutl2::generic::HostAppHandle) {
         GLOBAL_EDIT_HANDLE.init(registry.create_edit_handle());
         registry.register_menus::<Self>();
-        registry.set_plugin_information(&format!(
-            "Toggle Between Filter Object and Filter Effect / v{} / https://github.com/sevenc-nanashi/filter_effect_toggle.aux2",
-            env!("CARGO_PKG_VERSION")
-        ));
     }
 }
 
@@ -94,7 +102,7 @@ where
                 anyhow::bail!("オブジェクトが選択されていません");
             }
         }
-        log::info!("Applying operation to {} selected objects", objs.len());
+        tracing::info!("Applying operation to {} selected objects", objs.len());
         for obj in &objs {
             if let Err(e) = operation(edit, obj) {
                 errors.push(anyhow::anyhow!(
@@ -105,13 +113,13 @@ where
             }
         }
 
-        log::info!(
+        tracing::info!(
             "Operation completed with {} successes and {} failures",
             objs.len() - errors.len(),
             errors.len()
         );
         for error in &errors {
-            log::error!("{}", error);
+            tracing::error!("{}", error);
         }
 
         if errors.len() == objs.len() {

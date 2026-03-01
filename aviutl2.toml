@@ -2,7 +2,8 @@
 
 # 設定ファイルについては https://github.com/sevenc-nanashi/aviutl2-cli を参照してください。
 [project]
-name = "filter_effect_toggle"
+id = "sevenc-nanashi.filter_effect_toggle-aux2"
+name = "filter_effect_toggle.aux2"
 version = "0.1.0"
 
 [artifacts."filter_effect_toggle.aux2"]
@@ -35,6 +36,7 @@ aviutl2_version = "latest"
 [release]
 prebuild = ["cargo about generate ./about.hbs -o ./release/package.txt"]
 package_template = "./release/package.txt"
+package_information = "{name} v{version} / フィルタ効果とフィルタオブジェクトを切り替える機能を追加するプラグイン"
 
 [catalog]
 id = "sevenc-nanashi.filter_effect_toggle.aux2"

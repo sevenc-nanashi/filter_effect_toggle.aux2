@@ -2,15 +2,6 @@
 version = "0.8.4"
 backend = "cargo:cargo-about"
 
-[[tools."cargo:cargo-edit"]]
-version = "0.13.8"
-backend = "cargo:cargo-edit"
-
 [[tools."github:sevenc-nanashi/aviutl2-cli"]]
-version = "0.5.0"
-backend = "github:sevenc-nanashi/aviutl2-cli"
-"platforms.windows-x64" = { checksum = "sha256:da8c51f9d9891f815cb7a093b61961ae4e46962131d707648f7358167a185658", url = "https://github.com/sevenc-nanashi/aviutl2-cli/releases/download/0.5.0/au2-v0.5.0-windows.exe", url_api = "https://api.github.com/repos/sevenc-nanashi/aviutl2-cli/releases/assets/355902932"}
-
-[[tools.ruby]]
-version = "4.0.1"
-backend = "core:ruby"
+version = "0.7.0"
+backend = "github:sevenc-nanashi/aviutl2-cli[bin=au2.exe]"

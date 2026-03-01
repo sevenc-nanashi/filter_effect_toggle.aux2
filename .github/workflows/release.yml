@@ -52,5 +52,5 @@ jobs:
           body: |
             `filter_effect_toggle-v${{ github.event.inputs.version }}.au2pkg.zip`をダウンロードし、AviUtl2のプレビューにドラッグ&ドロップしてください。
           files: |
-            ./release/filter_effect_toggle-v*.au2pkg.zip
+            ./release/sevenc-nanashi.filter_effect_toggle-aux2-v*.au2pkg.zip
             ./release/catalog.json
