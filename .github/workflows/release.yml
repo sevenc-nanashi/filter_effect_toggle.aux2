@@ -43,14 +43,26 @@ jobs:
         shell: bash
         run: |
           mkdir release
+          cargo set-version "${{ github.event.inputs.version }}"
           au2 release --set-version "${{ github.event.inputs.version }}"
+
+      - name: Commit version change
+        run: |
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "actions@github.com"
+          git add Cargo.toml Cargo.lock
+          git commit -m "release: v${{ github.event.inputs.version }}"
+          git tag ${{ github.event.inputs.version }}
+
+          git push origin main
+          git push origin ${{ github.event.inputs.version }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.event.inputs.version }}
           body: |
-            `filter_effect_toggle-v${{ github.event.inputs.version }}.au2pkg.zip`をダウンロードし、AviUtl2のプレビューにドラッグ&ドロップしてください。
+            `sevenc-nanashi.filter_effect_toggle-aux2-v${{ github.event.inputs.version }}.au2pkg.zip`をダウンロードし、AviUtl2のプレビューにドラッグ&ドロップしてください。
           files: |
             ./release/sevenc-nanashi.filter_effect_toggle-aux2-v*.au2pkg.zip
             ./release/catalog.json
