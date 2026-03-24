@@ -87,7 +87,7 @@ where
     F: Fn(
             &mut aviutl2::generic::EditSection,
             &aviutl2::generic::ObjectHandle,
-        ) -> anyhow::Result<()>
+        ) -> anyhow::Result<aviutl2::generic::ObjectHandle>
         + Send
         + Sync
         + 'static,
@@ -95,8 +95,9 @@ where
     GLOBAL_EDIT_HANDLE.call_edit_section(|edit| {
         let mut errors = Vec::new();
         let mut objs = edit.get_selected_objects()?;
+        let focused_object = edit.get_focused_object()?;
         if objs.is_empty() {
-            if let Some(obj) = edit.get_focused_object()? {
+            if let Some(obj) = focused_object {
                 objs.push(obj);
             } else {
                 anyhow::bail!("オブジェクトが選択されていません");
@@ -104,12 +105,22 @@ where
         }
         tracing::info!("Applying operation to {} selected objects", objs.len());
         for obj in &objs {
-            if let Err(e) = operation(edit, obj) {
-                errors.push(anyhow::anyhow!(
-                    "Failed to perform operation for object {:?}: {}",
-                    obj,
-                    e
-                ));
+            let should_focus_new_object = focused_object
+                .as_ref()
+                .is_some_and(|focused| focused == obj);
+            match operation(edit, obj) {
+                Ok(new_object) => {
+                    if should_focus_new_object {
+                        edit.focus_object(&new_object)?;
+                    }
+                }
+                Err(e) => {
+                    errors.push(anyhow::anyhow!(
+                        "Failed to perform operation for object {:?}: {}",
+                        obj,
+                        e
+                    ));
+                }
             }
         }
 
@@ -133,7 +144,7 @@ where
 fn filter_effect_to_object(
     edit: &mut aviutl2::generic::EditSection,
     object_handle: &aviutl2::generic::ObjectHandle,
-) -> anyhow::Result<()> {
+) -> anyhow::Result<aviutl2::generic::ObjectHandle> {
     let object = edit.object(object_handle);
     let alias = object.get_alias_parsed()?;
     let (object_type, effect) = check_object_type(&alias)?.ok_or_else(|| {
@@ -162,19 +173,17 @@ fn filter_effect_to_object(
 
     let positions = object.get_layer_frame()?;
     object.delete_object()?;
-    edit.create_object_from_alias(
+    Ok(edit.create_object_from_alias(
         &new_object_alias.to_string(),
         positions.layer,
         positions.start,
         positions.end - positions.start,
-    )?;
-
-    Ok(())
+    )?)
 }
 fn filter_object_to_effect(
     edit: &mut aviutl2::generic::EditSection,
     object_handle: &aviutl2::generic::ObjectHandle,
-) -> anyhow::Result<()> {
+) -> anyhow::Result<aviutl2::generic::ObjectHandle> {
     let object = edit.object(object_handle);
     let alias = object.get_alias_parsed()?;
     let (object_type, _effect) = check_object_type(&alias)?.ok_or_else(|| {
@@ -200,14 +209,12 @@ fn filter_object_to_effect(
 
     let positions = object.get_layer_frame()?;
     object.delete_object()?;
-    edit.create_object_from_alias(
+    Ok(edit.create_object_from_alias(
         &new_object_alias.to_string(),
         positions.layer,
         positions.start,
         positions.end - positions.start,
-    )?;
-
-    Ok(())
+    )?)
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
