@@ -80,13 +80,41 @@ impl FilterEffectToggleAux2 {
     fn object_filter_effect_to_object(&mut self) -> anyhow::Result<()> {
         run_operations_to_selected_objects(filter_effect_to_object)
     }
+
+    #[object_item_and_effect(
+        name = "[filter_effect_toggle.aux2] フィルタオブジェクト ↔ フィルタ効果"
+    )]
+    fn object_item_and_effect_toggle_filter_object_and_effect(
+        &mut self,
+        object_handle: aviutl2::generic::ObjectHandle,
+        _effect: &str,
+        _index: usize,
+        _item: Option<&str>,
+    ) -> anyhow::Result<()> {
+        GLOBAL_EDIT_HANDLE
+            .call_edit_section(|edit| {
+                let object = edit.object(object_handle);
+                let alias = object.get_alias_parsed()?;
+                let (object_type, _effect) = check_object_type(&alias)?.ok_or_else(|| {
+                    anyhow::anyhow!("The object is neither a Filter Object nor a Filter Effect")
+                })?;
+                let created = match object_type {
+                    ObjectType::FilterObject => filter_object_to_effect(edit, object_handle),
+                    ObjectType::FilterEffect => filter_effect_to_object(edit, object_handle),
+                }?;
+                edit.focus_object(created)?;
+                Ok(())
+            })
+            .map_err(anyhow::Error::from)
+            .flatten()
+    }
 }
 
 fn run_operations_to_selected_objects<F>(operation: F) -> anyhow::Result<()>
 where
     F: Fn(
             &mut aviutl2::generic::EditSection,
-            &aviutl2::generic::ObjectHandle,
+            aviutl2::generic::ObjectHandle,
         ) -> anyhow::Result<aviutl2::generic::ObjectHandle>
         + Send
         + Sync
@@ -108,10 +136,10 @@ where
             let should_focus_new_object = focused_object
                 .as_ref()
                 .is_some_and(|focused| focused == obj);
-            match operation(edit, obj) {
+            match operation(edit, *obj) {
                 Ok(new_object) => {
                     if should_focus_new_object {
-                        edit.focus_object(&new_object)?;
+                        edit.focus_object(new_object)?;
                     }
                 }
                 Err(e) => {
@@ -143,7 +171,7 @@ where
 
 fn filter_effect_to_object(
     edit: &mut aviutl2::generic::EditSection,
-    object_handle: &aviutl2::generic::ObjectHandle,
+    object_handle: aviutl2::generic::ObjectHandle,
 ) -> anyhow::Result<aviutl2::generic::ObjectHandle> {
     let object = edit.object(object_handle);
     let alias = object.get_alias_parsed()?;
@@ -182,7 +210,7 @@ fn filter_effect_to_object(
 }
 fn filter_object_to_effect(
     edit: &mut aviutl2::generic::EditSection,
-    object_handle: &aviutl2::generic::ObjectHandle,
+    object_handle: aviutl2::generic::ObjectHandle,
 ) -> anyhow::Result<aviutl2::generic::ObjectHandle> {
     let object = edit.object(object_handle);
     let alias = object.get_alias_parsed()?;
