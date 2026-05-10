@@ -2,11 +2,11 @@
 name = "filter-effect-toggle-aux2"
 version = "0.1.6"
 edition = "2024"
-license = "MIT"
 repository = "https://github.com/sevenc-nanashi/filter_effect_toggle.aux2"
+license = "MIT"
 
 [lib]
 crate-type = ["cdylib"]
 
 [dependencies]
-aviutl2 = "0.27.0"
+aviutl2 = "0.28.0"

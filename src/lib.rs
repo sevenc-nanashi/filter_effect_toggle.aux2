@@ -56,7 +56,7 @@ impl FilterEffectToggleAux2 {
         self.object_filter_effect_to_object()
     }
 
-    #[object(name = "[filter_effect_toggle.aux2] フィルタオブジェクト ↔ フィルタ効果")]
+    #[object(name = "filter_effect_toggle.aux2\\フィルタオブジェクト ↔ フィルタ効果")]
     fn object_toggle_filter_object_and_effect(&mut self) -> anyhow::Result<()> {
         run_operations_to_selected_objects(|edit, object_handle| {
             let object = edit.object(object_handle);
@@ -71,18 +71,18 @@ impl FilterEffectToggleAux2 {
         })
     }
 
-    #[object(name = "[filter_effect_toggle.aux2] フィルタオブジェクト → フィルタ効果")]
+    #[object(name = "filter_effect_toggle.aux2\\フィルタオブジェクト → フィルタ効果")]
     fn object_filter_object_to_effect(&mut self) -> anyhow::Result<()> {
         run_operations_to_selected_objects(filter_object_to_effect)
     }
 
-    #[object(name = "[filter_effect_toggle.aux2] フィルタ効果 → フィルタオブジェクト")]
+    #[object(name = "filter_effect_toggle.aux2\\フィルタ効果 → フィルタオブジェクト")]
     fn object_filter_effect_to_object(&mut self) -> anyhow::Result<()> {
         run_operations_to_selected_objects(filter_effect_to_object)
     }
 
     #[object_item_and_effect(
-        name = "[filter_effect_toggle.aux2] フィルタオブジェクト ↔ フィルタ効果"
+        name = "filter_effect_toggle.aux2\\フィルタオブジェクト ↔ フィルタ効果"
     )]
     fn object_item_and_effect_toggle_filter_object_and_effect(
         &mut self,
