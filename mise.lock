@@ -8,6 +8,10 @@ backend = "cargo-prebuilt"
 version = "0.8.4"
 backend = "cargo:cargo-about"
 
+[[tools."cargo:cargo-edit"]]
+version = "0.13.13"
+backend = "cargo:cargo-edit"
+
 [[tools."github:EmbarkStudios/cargo-about"]]
 version = "0.9.0"
 backend = "github:EmbarkStudios/cargo-about"
