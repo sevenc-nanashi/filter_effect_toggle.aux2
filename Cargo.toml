@@ -9,4 +9,4 @@ license = "MIT"
 crate-type = ["cdylib"]
 
 [dependencies]
-aviutl2 = "0.28.0"
+aviutl2 = "0.53.0"

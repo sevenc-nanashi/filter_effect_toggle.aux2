@@ -102,7 +102,7 @@ impl FilterEffectToggleAux2 {
                     ObjectType::FilterObject => filter_object_to_effect(edit, object_handle),
                     ObjectType::FilterEffect => filter_effect_to_object(edit, object_handle),
                 }?;
-                edit.focus_object(created)?;
+                edit.set_focus_object(Some(created))?;
                 Ok(())
             })
             .map_err(anyhow::Error::from)
@@ -139,7 +139,7 @@ where
             match operation(edit, *obj) {
                 Ok(new_object) => {
                     if should_focus_new_object {
-                        edit.focus_object(new_object)?;
+                        edit.set_focus_object(Some(new_object))?;
                     }
                 }
                 Err(e) => {
